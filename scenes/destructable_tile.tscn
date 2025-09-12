@@ -1,0 +1,41 @@
+[gd_scene load_steps=6 format=3 uid="uid://b5utp34fr50av"]
+
+[ext_resource type="Script" uid="uid://cmxeea0ubwgpr" path="res://scripts/destructable_tile.gd" id="1_8kdi7"]
+[ext_resource type="Texture2D" uid="uid://dfbepr8q5moql" path="res://assets/sprites/world_tileset.png" id="1_ioo5p"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ioo5p"]
+size = Vector2(16, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8kdi7"]
+size = Vector2(16, 6)
+
+[sub_resource type="GDScript" id="GDScript_8kdi7"]
+script/source = "extends CollisionShape2D
+"
+
+[node name="DestructableTile" type="StaticBody2D"]
+script = ExtResource("1_8kdi7")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_ioo5p")
+region_enabled = true
+region_rect = Rect2(0, 0, 16, 16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_ioo5p")
+
+[node name="TriggerArea" type="Area2D" parent="."]
+collision_mask = 2
+
+[node name="TriggerCollision" type="CollisionShape2D" parent="TriggerArea"]
+position = Vector2(0, -11)
+shape = SubResource("RectangleShape2D_8kdi7")
+script = SubResource("GDScript_8kdi7")
+
+[node name="TileDestructionTimer" type="Timer" parent="."]
+
+[node name="TileRevivalTimer" type="Timer" parent="."]
+
+[connection signal="body_entered" from="TriggerArea" to="." method="_on_body_entered"]
+[connection signal="timeout" from="TileDestructionTimer" to="." method="_on_tile_destruction_timer_timeout"]
+[connection signal="timeout" from="TileRevivalTimer" to="." method="_on_tile_revival_timer_timeout"]
